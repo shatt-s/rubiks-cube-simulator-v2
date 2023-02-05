@@ -57,7 +57,7 @@ let faces = [
     new Face(-0.5, -0.5, 1, Z), new Face(0.5, -0.5, 1, Z), new Face(-0.5, 0.5, 1, Z), new Face(0.5, 0.5, 1, Z)
 ];
 
-let lastMove = ""
+let lastMove = "";
 
 let possibleMoves = [
     "U", "R", "F",
@@ -189,6 +189,27 @@ function transformFields() {
     return polynomialFields;
 }
 
+function chooseMove(move, pMoves) {
+    let newMove = "";
+    if (move.length > 1) {
+        switch (move[1]) {
+            case "'":
+                if (pMoves.includes(move[0])) move = move[0];
+                else if (pMoves.includes(move[0] + "2")) newMove = move[0] + "2";
+                break;
+            case "2":
+                if (pMoves.includes(move[0])) move = move[0];
+                else if (pMoves.includes(move[0] + "'")) newMove = move[0] + "'";
+                break;
+        }
+    } else {
+        if (pMoves.includes(move[0] + "'")) newMove = move[0] + "'";
+        else if (pMoves.includes(move[0] + "2")) newMove = move[0] + "2";
+    }
+    if (newMove == "") newMove = pMoves[Math.floor(Math.random() * pMoves.length)];
+    return newMove;
+}
+
 function nextMove() {
     let move;
     let key = fields.toString();
@@ -201,9 +222,8 @@ function nextMove() {
         move = moves[key][Math.floor(Math.random() * moves[key].length)];
     }
     moves[key].splice(moves[key].indexOf(move[0]), 1);
-    moves[key].splice(moves[key].indexOf(move[0]+"'"), 1);
-    moves[key].splice(moves[key].indexOf(move[0]+"2"), 1);
-    return move;
+    moves[key].splice(moves[key].indexOf(move[0] + "'"), 1);
+    moves[key].splice(moves[key].indexOf(move[0] + "2"), 1);
     // if (move == getOppositeMove(lastMove) || move == lastMove) {
     //     let index = array.indexOf(move);
     //     if (index > -1) {
@@ -220,16 +240,16 @@ function nextMove() {
     //     print (array)
     //     move = array[Math.floor(Math.random() * array.length)];
     // }
-    // lastMove = move;
-    // return move
+    lastMove = move;
+    return move
 }
 
-let solveMoves = ""
+let solveMoves;
 
 function solve() {
     counter = 0;
     solveMoves = "";
-    while (!solved() || counter < 200) {
+    while (!solved() && counter < 200) {
         let move = nextMove();
         switch (move) {
             case "U":
@@ -268,6 +288,8 @@ function solve() {
 }
 
 // fields = [3, 1, 3, 1, 4, 4, 5, 2, 5, 5, 1, 4, 6, 6, 6, 6, 3, 3, 2, 5, 2, 2, 1, 4]
+
+// [3, 1, 3, 1, 4, 4, 5, 2, 5, 5, 1, 4, 6, 6, 6, 6, 3, 3, 2, 5, 2, 2, 1, 4]
 
 function solved() {
     for (var side = 0; 24 > side; side += 4) {
