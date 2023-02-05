@@ -31,7 +31,7 @@
 
       warnings.simplefilter('ignore', UserWarning)
 
-      model = load('model.dump')
+      model = load('./data/model.dump')
 
       def predict(fields):
         arr = np.array(list(fields)).reshape(1, -1)
