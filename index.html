@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="p5/p5.min.js"></script>
+    <script src="p5/p5.sound.min.js"></script>
+    <script src="https://freshfork.github.io/p5.EasyCam/p5.easycam.js"></script>
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <main>
+      <py-config>
+        packages = ["scikit-learn", "joblib", "numpy"]
+
+        [[fetch]]
+        files = ["./model.dump"]
+      </py-config>
+    </main>
+    <script src="sketch.js"></script>
+    <py-script>
+      import warnings
+      from joblib import load
+
+      import numpy as np
+      from sklearn.ensemble import HistGradientBoostingClassifier
+      from sklearn.model_selection import train_test_split, KFold, GridSearchCV
+      from sklearn.pipeline import make_pipeline
+      from sklearn.preprocessing import PolynomialFeatures
+
+      warnings.simplefilter('ignore', UserWarning)
+
+      model = load('model.dump')
+
+      def predict(fields):
+        arr = np.array(list(fields)).reshape(1, -1)
+        return model.predict(arr)[0]
+    </py-script>
+  </body>
+</html>
