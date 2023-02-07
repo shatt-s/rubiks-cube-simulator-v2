@@ -1,8 +1,10 @@
 class Face {
-    constructor(x, y, z, rot) {
+    constructor(x, y, z, rot, ID) {
         this.position = createVector(x, y, z);
         this.axis = rot;
+        // this.target = 0;
         this.colour = -1;
+        this.ID = ID;
     }
 
     colours = [color(255, 60, 60),     // Red
@@ -17,11 +19,72 @@ class Face {
         this.colour = col;
     }
 
+    getColour() {
+        return this.colours[this.colour - 1].levels;
+    }
+
+    getSideColour() {
+        return [(this.position.x+1)*100, (this.position.y+1)*100, (this.position.z+1)*100, 255];
+    }
+
+    
+    predraw() {
+        push();
+        noStroke();
+        translate(this.position);
+        rotate(HALF_PI, this.axis)
+        fill(this.getSideColour());
+        beginShape();
+        vertex(-0.5, -0.5, 0);
+        vertex(-0.5, 0.5, 0);
+        vertex(0.5, 0.5, 0);
+        vertex(0.5, -0.5, 0);
+        vertex(-0.5, -0.5, 0);
+        endShape(CLOSE);
+        textFont(this.fontRegular);
+        text(this.getSideColour());
+        pop();
+    }
+
+    mDraw() {
+        push();
+        translate(this.position);
+        rotate(HALF_PI, this.axis)
+        fill(this.colours[this.colour - 1]);
+        // fill((this.ID >> 16) & 0xFF, (this.ID >> 8) & 0xF, this.ID & 0xFF);
+        // noStroke();
+        // mPlane(-0.5, -0.5, 0,
+        //     -0.5, 0.5, 0,
+        //     0.5, 0.5, 0,
+        //     0.5, -0.5, 0,
+        //     -0.5, -0.5, 0
+        // );
+
+        fill((this.ID >> 16) & 0xFF, (this.ID >> 8) & 0xF, this.ID & 0xFF);
+        noStroke();
+        beginShape();
+        vertex(-0.5, -0.5, 0);
+        vertex(-0.5, 0.5, 0);
+        vertex(0.5, 0.5, 0);
+        vertex(0.5, -0.5, 0);
+        vertex(-0.5, -0.5, 0);
+        endShape(CLOSE);
+        pop();
+    }
+
     draw() {
         push();
         translate(this.position);
         rotate(HALF_PI, this.axis)
-        fill(this.colours[this.colour-1]);
+        fill(this.colours[this.colour - 1]);
+        // fill((this.ID >> 16) & 0xFF, (this.ID >> 8) & 0xF, this.ID & 0xFF);
+        // noStroke();
+        // mPlane(-0.5, -0.5, 0,
+        //     -0.5, 0.5, 0,
+        //     0.5, 0.5, 0,
+        //     0.5, -0.5, 0,
+        //     -0.5, -0.5, 0
+        // );
         beginShape();
         vertex(-0.5, -0.5, 0);
         vertex(-0.5, 0.5, 0);
@@ -49,12 +112,12 @@ let fields = [
 ];
 
 let faces = [
-    new Face(-0.5, 1, -0.5, X), new Face(0.5, 1, -0.5, X), new Face(-0.5, 1, 0.5, X), new Face(0.5, 1, 0.5, X),
-    new Face(-1, -0.5, 0.5, Y), new Face(-1, -0.5, -0.5, Y), new Face(-1, 0.5, 0.5, Y), new Face(-1, 0.5, -0.5, Y),
-    new Face(-0.5, -0.5, -1, Z), new Face(0.5, -0.5, -1, Z), new Face(-0.5, 0.5, -1, Z), new Face(0.5, 0.5, -1, Z),
-    new Face(-0.5, -1, -0.5, X), new Face(0.5, -1, -0.5, X), new Face(-0.5, -1, 0.5, X), new Face(0.5, -1, 0.5, X),
-    new Face(1, -0.5, 0.5, Y), new Face(1, -0.5, -0.5, Y), new Face(1, 0.5, 0.5, Y), new Face(1, 0.5, -0.5, Y),
-    new Face(-0.5, -0.5, 1, Z), new Face(0.5, -0.5, 1, Z), new Face(-0.5, 0.5, 1, Z), new Face(0.5, 0.5, 1, Z)
+    new Face(-0.5, 1, -0.5, X, 100), new Face(0.5, 1, -0.5, X, 100), new Face(-0.5, 1, 0.5, X, 100), new Face(0.5, 1, 0.5, X, 100),
+    new Face(-1, -0.5, 0.5, Y, 101), new Face(-1, -0.5, -0.5, Y, 101), new Face(-1, 0.5, 0.5, Y, 101), new Face(-1, 0.5, -0.5, Y, 101),
+    new Face(-0.5, -0.5, -1, Z, 102), new Face(0.5, -0.5, -1, Z, 102), new Face(-0.5, 0.5, -1, Z, 102), new Face(0.5, 0.5, -1, Z, 102),
+    new Face(-0.5, -1, -0.5, X, 103), new Face(0.5, -1, -0.5, X, 103), new Face(-0.5, -1, 0.5, X, 103), new Face(0.5, -1, 0.5, X, 103),
+    new Face(1, -0.5, 0.5, Y, 104), new Face(1, -0.5, -0.5, Y, 104), new Face(1, 0.5, 0.5, Y, 104), new Face(1, 0.5, -0.5, Y, 104),
+    new Face(-0.5, -0.5, 1, Z, 105), new Face(0.5, -0.5, 1, Z, 105), new Face(-0.5, 0.5, 1, Z, 105), new Face(0.5, 0.5, 1, Z, 105)
 ];
 
 let lastMove = "";
@@ -91,24 +154,127 @@ let moves = {}
 // 9 13 17 *
 // 5 8 12 *
 
+function arrayEquals(a1,a2) {
+    return JSON.stringify(a1) == JSON.stringify(a2);
+}
+
+function objectAtMouse() {
+    return getObjectID(mouseX, mouseY);
+}
+
+function getObjectID(mx, my) {
+	if (mx > width || my > height || mx < 0 || my < 0) {
+		return 0;
+	}
+    var gl = canvas.getContext('webgl');
+
+    for (let i = 0; i < faces.length; i++) {
+        faces[i].mDraw();
+    }
+
+	var pix = getPixels();
+	var index = 4 * ((gl.drawingBufferHeight-my) * gl.drawingBufferWidth+mx);
+    return (pix[index]<<16 | pix[index+1]<<8 | pix[index+2]);
+}
+
+function getPixels() {
+	var gl = canvas.getContext('webgl');
+	var pix = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+	gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pix);
+	return (pix);
+}
+
+
+// let gl;
+let easyCam;
+// let cam;
+
+let webglCanvas;
+// let context;
+
 function setup() {
-    createCanvas(windowWidth, windowHeight, WEBGL);
-    let easyCam = createEasyCam();
+    webglCanvas = createCanvas(windowWidth, windowHeight, WEBGL);
+    // context = webglCanvas.drawingContext;
+    // cam = createCamera();
+    // cam = mCamera();
+    easyCam = createEasyCam();
     easyCam.setZoomScale(0);
     easyCam.setPanScale(0);
     easyCam.setWheelScale(0);
-    document.oncontextmenu = ()=>false;
+    easyCam.reset = () => false;
+
+    pixelDensity(1);
+
+    // gl = easyCam.graphics;
+    // ortho();
+
+    document.oncontextmenu = () => false;
+
+    solveButton = createButton("Solve");
+    solveButton.position(5, 5);
+    solveButton.mousePressed(solve);
+    solveButton.addClass("customButton");
+
+    // for (let i = 0; i < faces.length; i++) {
+    //     print(faces[i].getSideColour());
+    // }
 }
-  
+
 function draw() {
+    // orbitControl(3);
     background(220);
     scale(70)
     // if (faces[0].colour == -1) {
     //     setupColours();
     // }
-    setColours()
+    setColours();
+
+    // for (let i = 0; i < faces.length; i++) {
+    //     faces[i].predraw();
+    // }
+
+    // loadPixels();
+    // mousePixel = webglCanvas.get(mouseX, mouseY);
+
+    // easyCam.beginHUD();
+    // fill(mousePixel);
+    // noStroke();
+    // translate(5,0,0);
+    // box(5);
+    // easyCam.endHUD();
+    // updatePixels();
+
+
     for (let i = 0; i < faces.length; i++) {
         faces[i].draw();
+    }
+    // mousePixel = get(mouseX, mouseY);
+}
+
+function mousePressed() {
+    for (let i = 0; i < faces.length; i++) {
+        let face = faces[i];
+        if (face.ID == objectAtMouse()) {
+            if (i < 24 && i >= 20 ) {
+                F();
+                break;
+            } else if (i < 20 && i >= 16 ) {
+                R();
+                break;
+            } else if (i < 16 && i >= 12 ) {
+                U();
+                break;
+            } else if (i < 12 && i >= 8 ) {
+                B();
+                break;
+            } else if (i < 8 && i >= 4 ) {
+                L();
+                break;
+            } else if (i < 4 && i >= 0 ) {
+                D();
+                break;
+            }
+        }
     }
 }
 
@@ -160,6 +326,58 @@ function F2() {
     F();
     F();
 }
+
+function D() {
+    for (var d = [], f = 0; 24 > f; f++) d[f] = fields[f];
+    fields[2] = d[0], fields[3] = d[2], fields[1] = d[3], fields[0] = d[1], fields[18] = d[22], fields[19] = d[23], fields[11] = d[18], fields[10] = d[19], fields[7] = d[11], fields[6] = d[10], fields[22] = d[7], fields[23] = d[6];
+}
+
+function DPrime() {
+    for (var d = [], f = 0; 24 > f; f++) d[f] = fields[f];
+    fields[0] = d[2], fields[2] = d[3], fields[3] = d[1], fields[1] = d[0], fields[22] = d[18], fields[23] = d[19], fields[18] = d[11], fields[19] = d[10], fields[11] = d[7], fields[10] = d[6], fields[7] = d[22], fields[6] = d[23];
+}
+
+function D2() {
+    D();
+    D();
+}
+
+function L() {
+    for (var d = [], f = 0; 24 > f; f++) d[f] = fields[f];
+    fields[5] = d[7], fields[4] = d[5], fields[6] = d[4], fields[7] = d[6], fields[0] = d[22], fields[2] = d[20], fields[22] = d[14], fields[20] = d[12], fields[14] = d[8], fields[12] = d[10], fields[8] = d[0], fields[10] = d[2];
+}
+
+function LPrime() {
+    for (var d = [], f = 0; 24 > f; f++) d[f] = fields[f];
+    fields[0] = d[2], fields[2] = d[3], fields[3] = d[1], fields[1] = d[0], fields[22] = d[18], fields[23] = d[19], fields[18] = d[11], fields[19] = d[10], fields[11] = d[7], fields[10] = d[6], fields[7] = d[22], fields[6] = d[23];
+}
+
+function L2() {
+    L();
+    L();
+}
+
+function B() {
+    for (var d = [], f = 0; 24 > f; f++) d[f] = fields[f];
+    fields[9] = d[11], fields[8] = d[9], fields[10] = d[8], fields[11] = d[10], fields[17] = d[1], fields[19] = d[0], fields[12] = d[17], fields[13] = d[19], fields[7] = d[12], fields[5] = d[13], fields[1] = d[7], fields[0] = d[5];
+}
+
+function BPrime() {
+    for (var d = [], f = 0; 24 > f; f++) d[f] = fields[f];
+    fields[11] = d[9], fields[9] = d[8], fields[8] = d[10], fields[10] = d[11], fields[1] = d[17], fields[0] = d[19], fields[17] = d[12], fields[19] = d[13], fields[12] = d[7], fields[13] = d[5], fields[7] = d[1], fields[5] = d[0];
+}
+
+function B2() {
+    B();
+    B();
+}
+
+                                                                                    //       12 13
+                                                                                    //       14 15
+                                                                                    // 5  4  20 21 16 17 9  8
+                                                                                    // 7  6  22 23 18 19 11 10
+                                                                                    //       2  3
+                                                                                    //       0  1
 
 function setColours() {
     for (let i = 0; i < 24; i++) {
@@ -219,11 +437,15 @@ function nextMove() {
         let predict = pyscript.runtime.globals.get('predict');
         move = predict(polynomialFields);
     } else {
+        if (move == getOppositeMove(lastMove) || move == lastMove) {
+            moves[key].splice(moves[key].indexOf(move), 1);
+        }
         move = moves[key][Math.floor(Math.random() * moves[key].length)];
     }
-    moves[key].splice(moves[key].indexOf(move[0]), 1);
-    moves[key].splice(moves[key].indexOf(move[0] + "'"), 1);
-    moves[key].splice(moves[key].indexOf(move[0] + "2"), 1);
+
+    // moves[key].splice(moves[key].indexOf(move[0]), 1);
+    // moves[key].splice(moves[key].indexOf(move[0] + "'"), 1);
+    // moves[key].splice(moves[key].indexOf(move[0] + "2"), 1);
     // if (move == getOppositeMove(lastMove) || move == lastMove) {
     //     let index = array.indexOf(move);
     //     if (index > -1) {
@@ -237,18 +459,17 @@ function nextMove() {
     //     if (index > -1) {
     //         array.splice(index, 1);
     //     }
-    //     print (array)
+    //     print(array)
     //     move = array[Math.floor(Math.random() * array.length)];
     // }
     lastMove = move;
     return move
 }
 
-let solveMoves;
+let solveMoves = "";
 
 function solve() {
     counter = 0;
-    solveMoves = "";
     while (!solved() && counter < 200) {
         let move = nextMove();
         switch (move) {
@@ -283,8 +504,13 @@ function solve() {
         solveMoves += move + " "
         counter += 1;
     }
-    if (solved()) moves = {};
-    return solveMoves;
+    if (solved()) {
+        alert(solveMoves);
+        moves = {};
+        solveMoves = "";
+    } else {
+        alert("Partial Solve, please try again.")
+    }
 }
 
 // fields = [3, 1, 3, 1, 4, 4, 5, 2, 5, 5, 1, 4, 6, 6, 6, 6, 3, 3, 2, 5, 2, 2, 1, 4]
