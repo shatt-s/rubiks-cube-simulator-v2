@@ -252,6 +252,14 @@ function draw() {
 }
 
 function mousePressed() {
+    turnCube();
+}
+
+function touchStarted() {
+    turnCube();
+}
+
+function turnCube() {
     for (let i = 0; i < faces.length; i++) {
         let face = faces[i];
         if (face.ID == objectAtMouse()) {
@@ -505,6 +513,7 @@ function solve() {
         counter += 1;
     }
     if (solved()) {
+        if (solveMoves.length == 0) return false;
         alert(solveMoves);
         moves = {};
         solveMoves = "";

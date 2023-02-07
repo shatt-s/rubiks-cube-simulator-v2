@@ -5,8 +5,14 @@ html, body {
 canvas {
   display: block;
 }
+
+button {
+  visibility: hidden;
+}
+
 .customButton {
   border: none;
+  visibility: visible;
   background-color: white; 
   color: black; 
   border: 2px solid #008CBA;
@@ -21,6 +27,7 @@ canvas {
   cursor: pointer;
 }
 .customButton:hover {
+  visibility: visible;
   background-color: #008CBA;
   color: white;
 }
