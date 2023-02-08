@@ -286,16 +286,6 @@ class EasyCam {
         cam.SHIFT_CONSTRAINT = 0;
       },
 
-      dblclick : function(event){
-        // Account for canvas shift:
-        var offX = cam.offset[0] - window.scrollX,
-            offY = cam.offset[1] - window.scrollY;
-
-        if(cam.mouse.insideViewport(event.x - offX, event.y - offY)){
-          cam.reset();
-        }
-      },
-
       wheel : function(event){
         var x = event.x;
         var y = event.y;
@@ -522,7 +512,6 @@ class EasyCam {
 
       cam.attachListener(el    , 'mousedown' , mouse.mousedown , op);
       cam.attachListener(el    , 'mouseup'   , mouse.mouseup   , op);
-      cam.attachListener(el    , 'dblclick'  , mouse.dblclick  , op);
       cam.attachListener(el    , 'wheel'     , mouse.wheel     , op);
       cam.attachListener(el    , 'touchstart', mouse.touchstart, op);
       cam.attachListener(el    , 'touchend'  , mouse.touchend  , op);
@@ -539,7 +528,6 @@ class EasyCam {
 
     cam.detachListener(mouse.mousedown );
     cam.detachListener(mouse.mouseup   );
-    cam.detachListener(mouse.dblclick  );
     cam.detachListener(mouse.wheel     );
     cam.detachListener(mouse.keydown   );
     cam.detachListener(mouse.keyup     );

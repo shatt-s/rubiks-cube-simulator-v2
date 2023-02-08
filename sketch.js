@@ -23,29 +23,6 @@ class Face {
         return this.colours[this.colour - 1].levels;
     }
 
-    getSideColour() {
-        return [(this.position.x+1)*100, (this.position.y+1)*100, (this.position.z+1)*100, 255];
-    }
-
-    
-    predraw() {
-        push();
-        noStroke();
-        translate(this.position);
-        rotate(HALF_PI, this.axis)
-        fill(this.getSideColour());
-        beginShape();
-        vertex(-0.5, -0.5, 0);
-        vertex(-0.5, 0.5, 0);
-        vertex(0.5, 0.5, 0);
-        vertex(0.5, -0.5, 0);
-        vertex(-0.5, -0.5, 0);
-        endShape(CLOSE);
-        textFont(this.fontRegular);
-        text(this.getSideColour());
-        pop();
-    }
-
     mDraw() {
         push();
         translate(this.position);
@@ -184,14 +161,16 @@ function getPixels() {
 	return (pix);
 }
 
-
-// let gl;
-let easyCam;
-// let cam;
+let solveButton;
+function preload() {
+    solveButton = createButton("Solve");
+    solveButton.position(5, 5);
+    solveButton.mousePressed(solve);
+    solveButton.addClass("customButton");
+}
 
 let webglCanvas;
-// let context;
-
+let easyCam;
 function setup() {
     webglCanvas = createCanvas(windowWidth, windowHeight, WEBGL);
     // context = webglCanvas.drawingContext;
@@ -201,7 +180,6 @@ function setup() {
     easyCam.setZoomScale(0);
     easyCam.setPanScale(0);
     easyCam.setWheelScale(0);
-    easyCam.reset = () => false;
 
     pixelDensity(1);
 
@@ -209,11 +187,6 @@ function setup() {
     // ortho();
 
     document.oncontextmenu = () => false;
-
-    solveButton = createButton("Solve");
-    solveButton.position(5, 5);
-    solveButton.mousePressed(solve);
-    solveButton.addClass("customButton");
 
     // for (let i = 0; i < faces.length; i++) {
     //     print(faces[i].getSideColour());
@@ -252,10 +225,6 @@ function draw() {
 }
 
 function mousePressed() {
-    turnCube();
-}
-
-function turnCube() {
     for (let i = 0; i < faces.length; i++) {
         let face = faces[i];
         if (face.ID == objectAtMouse()) {
@@ -280,6 +249,11 @@ function turnCube() {
             }
         }
     }
+}
+
+function keyPressed() {
+    if (keyCode === 32)
+        easyCam.reset();
 }
 
 function windowResized() {
@@ -376,12 +350,12 @@ function B2() {
     B();
 }
 
-                                                                                    //       12 13
-                                                                                    //       14 15
-                                                                                    // 5  4  20 21 16 17 9  8
-                                                                                    // 7  6  22 23 18 19 11 10
-                                                                                    //       2  3
-                                                                                    //       0  1
+//       12 13
+//       14 15
+// 5  4  20 21 16 17 9  8
+// 7  6  22 23 18 19 11 10
+//       2  3
+//       0  1
 
 function setColours() {
     for (let i = 0; i < 24; i++) {
@@ -438,12 +412,16 @@ function nextMove() {
     if (moves[key] === undefined || moves[key].length == 0) {
         moves[key] = [...possibleMoves];
         let polynomialFields = transformFields();
-        let predict = pyscript.runtime.globals.get('predict');
+        predict = pyscript.runtime.globals.get('predict');
         move = predict(polynomialFields);
-    } else {
-        if (move == getOppositeMove(lastMove) || move == lastMove) {
+        if (move == getOppositeMove(lastMove)) {
             moves[key].splice(moves[key].indexOf(move), 1);
+            move = moves[key][Math.floor(Math.random() * moves[key].length)];
+        } else if (move == lastMove) {
+            moves[key].splice(moves[key].indexOf(lastMove), 1);
+            move = moves[key][Math.floor(Math.random() * moves[key].length)];
         }
+    } else {
         move = moves[key][Math.floor(Math.random() * moves[key].length)];
     }
 
@@ -474,7 +452,7 @@ let solveMoves = "";
 
 function solve() {
     counter = 0;
-    while (!solved() && counter < 200) {
+    while (!solved() && counter < 400) {
         let move = nextMove();
         switch (move) {
             case "U":
@@ -514,7 +492,7 @@ function solve() {
         moves = {};
         solveMoves = "";
     } else {
-        alert("Partial Solve, please try again.")
+        alert("Timed out with Partial Solve, click Solve again to complete it.")
     }
 }
 
