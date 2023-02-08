@@ -255,10 +255,6 @@ function mousePressed() {
     turnCube();
 }
 
-function touchStarted() {
-    turnCube();
-}
-
 function turnCube() {
     for (let i = 0; i < faces.length; i++) {
         let face = faces[i];
