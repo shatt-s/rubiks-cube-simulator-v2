@@ -37,8 +37,9 @@ class Face {
         //     -0.5, -0.5, 0
         // );
 
-        fill((this.ID >> 16) & 0xFF, (this.ID >> 8) & 0xF, this.ID & 0xFF);
+        strokeWeight(0);
         noStroke();
+        fill((this.ID >> 16) & 0xFF, (this.ID >> 8) & 0xF, this.ID & 0xFF);
         beginShape();
         vertex(-0.5, -0.5, 0);
         vertex(-0.5, 0.5, 0);
@@ -143,7 +144,6 @@ function getObjectID(mx, my) {
 	if (mx > width || my > height || mx < 0 || my < 0) {
 		return 0;
 	}
-    var gl = canvas.getContext('webgl');
 
     for (let i = 0; i < faces.length; i++) {
         faces[i].mDraw();
@@ -171,8 +171,10 @@ function preload() {
 
 let webglCanvas;
 let easyCam;
+let gl;
 function setup() {
     webglCanvas = createCanvas(windowWidth, windowHeight, WEBGL);
+    gl = canvas.getContext('webgl');
     // context = webglCanvas.drawingContext;
     // cam = createCamera();
     // cam = mCamera();
@@ -225,9 +227,12 @@ function draw() {
 }
 
 function mousePressed() {
+    let object = objectAtMouse();
     for (let i = 0; i < faces.length; i++) {
         let face = faces[i];
-        if (face.ID == objectAtMouse()) {
+        print(object)
+        if (object == 14474460 || object == 0) break;
+        if (face.ID == object) {
             if (i < 24 && i >= 20 ) {
                 F();
                 break;
