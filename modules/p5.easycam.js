@@ -614,8 +614,8 @@ class EasyCam {
                         this.camRUP[0], this.camRUP[1], this.camRUP[2]);
       else
         renderer._curCamera.camera(this.camEYE[0], this.camEYE[1], this.camEYE[2],
-                        this.camLAT[0], this.camLAT[1], this.camLAT[2],
-                        this.camRUP[0], this.camRUP[1], this.camRUP[2]);
+                                   this.camLAT[0], this.camLAT[1], this.camLAT[2],
+                                   this.camRUP[0], this.camRUP[1], this.camRUP[2]);
     }
   }
 

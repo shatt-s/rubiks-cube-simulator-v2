@@ -1,3 +1,4 @@
+
 class Face {
     constructor(x, y, z, rot, ID) {
         this.position = createVector(x, y, z);
@@ -26,7 +27,7 @@ class Face {
     mDraw() {
         push();
         translate(this.position);
-        rotate(HALF_PI, this.axis)
+        rotate(HALF_PI, this.axis);
         fill(this.colours[this.colour - 1]);
         // fill((this.ID >> 16) & 0xFF, (this.ID >> 8) & 0xF, this.ID & 0xFF);
         // noStroke();
@@ -53,7 +54,7 @@ class Face {
     draw() {
         push();
         translate(this.position);
-        rotate(HALF_PI, this.axis)
+        rotate(HALF_PI, this.axis);
         fill(this.colours[this.colour - 1]);
         // fill((this.ID >> 16) & 0xFF, (this.ID >> 8) & 0xF, this.ID & 0xFF);
         // noStroke();
@@ -98,15 +99,14 @@ let faces = [
     new Face(-0.5, -0.5, 1, Z, 105), new Face(0.5, -0.5, 1, Z, 105), new Face(-0.5, 0.5, 1, Z, 105), new Face(0.5, 0.5, 1, Z, 105)
 ];
 
+let moves = {};
 let lastMove = "";
-
 let possibleMoves = [
     "U", "R", "F",
     "U'", "R'", "F'",
     "U2", "R2", "F2"
-]
+];
 
-let moves = {}
 
 //     3 3
 //     3 3
