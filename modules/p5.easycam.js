@@ -386,13 +386,13 @@ class EasyCam {
 
       tapcount : 0,
 
-      dbltap : function(event) {
-        if(cam.mouse.tapcount++ == 0) {
-          setTimeout( function() {
-            cam.mouse.tapcount = 0;
-          }, 350 );
-        }
-      },
+      // dbltap : function(event) {
+      //   if(cam.mouse.tapcount++ == 0) {
+      //     setTimeout( function() {
+      //       cam.mouse.tapcount = 0;
+      //     }, 350 );
+      //   }
+      // },
 
 
 
