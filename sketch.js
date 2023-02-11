@@ -230,7 +230,7 @@ function mousePressed() {
     let object = objectAtMouse();
     for (let i = 0; i < faces.length; i++) {
         let face = faces[i];
-        print(object)
+        // print(object)
         if (object == 14474460 || object == 0) break;
         if (face.ID == object) {
             if (i < 24 && i >= 20 ) {
