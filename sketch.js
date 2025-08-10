@@ -411,14 +411,15 @@ function chooseMove(move, pMoves) {
     return newMove;
 }
 
+const pyscriptEl = document.getElementById("model-script");
+
 function nextMove() {
     let move;
     let key = fields.toString();
     if (moves[key] === undefined || moves[key].length == 0) {
         moves[key] = [...possibleMoves];
         let polynomialFields = transformFields();
-        predict = pyscript.runtime.globals.get('predict');
-        move = predict(polynomialFields);
+        move = pyscriptEl.invoke("predict", polynomialFields);
         if (move == getOppositeMove(lastMove)) {
             moves[key].splice(moves[key].indexOf(move), 1);
             move = moves[key][Math.floor(Math.random() * moves[key].length)];
