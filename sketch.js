@@ -420,8 +420,8 @@ function nextMove() {
         moves[key] = [...possibleMoves];
         let polynomialFields = transformFields();
         // move = await pyscriptEl.invoke("predict", polynomialFields);
-		predict = pyscript.runtime.globals.get('predict');
-		move = predict(polynomialFields);
+		// predict = pyscript.runtime.globals.get('predict');
+		move = window.predict_func(polynomialFields);
         if (move == getOppositeMove(lastMove)) {
             moves[key].splice(moves[key].indexOf(move), 1);
             move = moves[key][Math.floor(Math.random() * moves[key].length)];
