@@ -411,7 +411,7 @@ function chooseMove(move, pMoves) {
     return newMove;
 }
 
-const pyscriptEl = document.getElementById("model-script");
+// const pyscriptEl = document.getElementById("model-script");
 
 function nextMove() {
     let move;
@@ -419,7 +419,9 @@ function nextMove() {
     if (moves[key] === undefined || moves[key].length == 0) {
         moves[key] = [...possibleMoves];
         let polynomialFields = transformFields();
-        move = await pyscriptEl.invoke("predict", polynomialFields);
+        // move = await pyscriptEl.invoke("predict", polynomialFields);
+		predict = pyscript.runtime.globals.get('predict');
+		move = predict(polynomialFields);
         if (move == getOppositeMove(lastMove)) {
             moves[key].splice(moves[key].indexOf(move), 1);
             move = moves[key][Math.floor(Math.random() * moves[key].length)];
