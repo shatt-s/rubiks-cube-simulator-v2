@@ -6,8 +6,8 @@
     <script src="modules/p5.easycam.js"></script>
     <script src="modules/p5.clickable.js"></script>
     
-    <link rel="stylesheet" href="https://pyscript.net/releases/2024.2.1/core.css">
-    <script type="module" src="https://pyscript.net/releases/2024.2.1/core.js"></script>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.12.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2023.12.1/core.js"></script>
 
     <py-config type="json">
       {
@@ -24,7 +24,6 @@
     <meta charset="utf-8" />
   </head>
   <body>
-    <script src="sketch.js"></script>
     <py-script>
       import warnings
       from joblib import load
@@ -43,5 +42,12 @@
         arr = np.array(list(fields)).reshape(1, -1)
         return model.predict(arr)[0]
     </py-script>
+    <script type="module">
+      import { config, hooks } from "https://pyscript.net/releases/2023.12.1/core.js"
+      hooks.onInterpreterReady.add((wrap, element) => {
+          window.pyInterpreter = wrap.interpreter
+      })
+    </script>
+    <script src="sketch.js"></script>
   </body>
 </html>
