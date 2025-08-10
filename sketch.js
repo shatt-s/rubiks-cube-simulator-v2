@@ -419,7 +419,7 @@ function nextMove() {
     if (moves[key] === undefined || moves[key].length == 0) {
         moves[key] = [...possibleMoves];
         let polynomialFields = transformFields();
-        move = pyscriptEl.invoke("predict", polynomialFields);
+        move = await pyscriptEl.invoke("predict", polynomialFields);
         if (move == getOppositeMove(lastMove)) {
             moves[key].splice(moves[key].indexOf(move), 1);
             move = moves[key][Math.floor(Math.random() * moves[key].length)];
