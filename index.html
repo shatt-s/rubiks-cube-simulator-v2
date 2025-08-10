@@ -12,11 +12,15 @@
   </head>
   <body>
     <main>
-      <py-config type="toml">
-        packages = ["scikit-learn", "joblib", "numpy"]
-
-        [[fetch]]
-        files = ["./data/model.dump"]
+      <py-config type="json">
+        {
+          "packages": ["scikit-learn", "joblib", "numpy"],
+          "files": [
+            {
+              "from": "./data/model.dump"
+            }
+          ]
+        }
       </py-config>
     </main>
     <script src="sketch.js"></script>
