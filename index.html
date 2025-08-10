@@ -25,7 +25,8 @@
     <py-script>
       import warnings
       from joblib import load
-
+      from pyscript import window
+      
       import numpy as np
       from sklearn.ensemble import HistGradientBoostingClassifier
       from sklearn.model_selection import train_test_split, KFold, GridSearchCV
@@ -39,6 +40,8 @@
       def predict(fields):
         arr = np.array(list(fields)).reshape(1, -1)
         return model.predict(arr)[0]
+
+      window.predict_func = predict
     </py-script>
   </body>
 </html>
